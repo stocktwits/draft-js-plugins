@@ -1,3 +1,4 @@
+import find from 'lodash/find';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { genKey } from 'draft-js';
@@ -12,6 +13,7 @@ export class MentionSuggestions extends Component {
   static propTypes = {
     entityMutability: PropTypes.oneOf(['SEGMENTED', 'IMMUTABLE', 'MUTABLE']),
     entryComponent: PropTypes.func,
+    matchSuggestion: PropTypes.func,
     onAddMention: PropTypes.func,
     suggestions: PropTypes.array,
   };
@@ -245,6 +247,16 @@ export class MentionSuggestions extends Component {
     this.props.store.setEditorState(this.props.store.getEditorState());
   };
 
+  onSpacebar = keyboardEvent => {
+    const matchingSuggestion = find(this.props.suggestions, suggestion =>
+      this.props.matchSuggestion(suggestion, this.lastSearchValue)
+    );
+    if (matchingSuggestion) {
+      keyboardEvent.preventDefault();
+      this.onMentionSelect(matchingSuggestion);
+    }
+  };
+
   onMentionSelect = mention => {
     // Note: This can happen in case a user typed @xxx (invalid mention) and
     // then hit Enter. Then the mention will be undefined.
@@ -310,6 +322,10 @@ export class MentionSuggestions extends Component {
       if (keyboardEvent.keyCode === 9) {
         this.onTab(keyboardEvent);
       }
+      // spacebar
+      if (keyboardEvent.keyCode === 32) {
+        this.onSpacebar(keyboardEvent);
+      }
     };
 
     const descendant = `mention-option-${this.key}-${this.state.focusedOptionIndex}`;
@@ -364,6 +380,7 @@ export class MentionSuggestions extends Component {
       positionSuggestions, // eslint-disable-line no-unused-vars
       mentionTrigger, // eslint-disable-line no-unused-vars
       mentionPrefix, // eslint-disable-line no-unused-vars
+      matchSuggestion, // eslint-disable-line no-unused-vars
       ...elementProps
     } = this.props;
 

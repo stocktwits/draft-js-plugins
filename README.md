@@ -1,3 +1,63 @@
+# How to use the plugins
+
+Since npm does not support installing packages from subfolders, we need a workaround.
+The simplest know solution is to use [gitpkg](https://github.com/ramasilveyra/gitpkg).
+It allows us to publish each plugin as a lightweight (containing only files needed) git tag, that can be easily installed by npm.
+
+1. Install the gitpkg with `npm`:
+
+```
+$ npm install -g gitpkg
+```
+
+or with `yarn`:
+
+```
+$ yarn global add gitpkg
+```
+
+2. Run
+
+```
+$ gitpkg publish
+```
+
+in the directory you want to publish. You will probably need `yarn` to run the publish scripts.
+
+3. If everything run smoothly, the package is now published with tag:
+
+```
+{name in the package.json in the current folder}-{version in package.json in the current folder}-gitpkg
+```
+
+and can be installed by `npm`:
+
+```
+npm install "https://stocktwits/draft-js-plugins.git#{tagname}"
+```
+
+or
+
+```
+npm install github:stocktwits/draft-js-plugins#{tagname}"
+```
+
+4. You can delete the tag by:
+
+```
+git push origin :tagname
+```
+
+or if you want to be certain you do not delete a branch:
+
+```
+git push origin :refs/tags/tagname
+```
+
+P.S.
+You can use this to publish your branches before merge, you just need to checkout to the branch before publishing.
+You can also customize the tag name to a degree by changing the name and version in the package.json.
+
 # DraftJS Plugins
 
 ![Draft JS Plugins Logo](http://static.nikgraf.com/draft-js-plugins/draft-js-plugins.svg)

@@ -1,4 +1,3 @@
-import find from 'lodash/find';
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { genKey } from 'draft-js';
@@ -247,14 +246,16 @@ export class MentionSuggestions extends Component {
     this.props.store.setEditorState(this.props.store.getEditorState());
   };
 
-  onSpacebar = keyboardEvent => {
-    const matchingSuggestion = find(this.props.suggestions, suggestion =>
-      this.props.matchSuggestion(suggestion, this.lastSearchValue)
-    );
-    if (matchingSuggestion) {
-      keyboardEvent.preventDefault();
-      this.onMentionSelect(matchingSuggestion);
+  onSpacebar = () => {
+    const { mentionTrigger } = this.props;
+    const isDollarAmount =
+      mentionTrigger === '$' && !this.lastSearchValue.match(/[a-z]/gi);
+
+    if (!isDollarAmount) {
+      this.commitSelection();
     }
+
+    this.closeDropdown();
   };
 
   onMentionSelect = mention => {

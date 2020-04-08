@@ -324,9 +324,11 @@ export class MentionSuggestions extends Component {
         this.onTab(keyboardEvent);
       }
       // spacebar
+      /*
       if (keyboardEvent.keyCode === 32) {
         this.onSpacebar(keyboardEvent);
       }
+      */
     };
 
     const descendant = `mention-option-${this.key}-${this.state.focusedOptionIndex}`;
